@@ -143,15 +143,6 @@ const cardVariants = {
   }
 };
 
-const floatingAnimation = {
-  y: [0, -15, 0],
-  transition: {
-    duration: 4,
-    repeat: Infinity,
-    ease: "easeInOut"
-  }
-};
-
 // Featured Project Component
 const FeaturedProject = ({ project, index }) => {
   const projectRef = useRef(null);
