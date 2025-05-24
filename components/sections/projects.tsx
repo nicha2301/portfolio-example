@@ -140,6 +140,19 @@ interface ProjectProps {
   index: number;
 }
 
+interface Particle {
+  id: number;
+  x: number;
+  y: number;
+  opacity: number;
+  scale: number;
+  width: number;
+  height: number;
+  duration: number;
+  yAnimation: number[];
+  rotate: number;
+}
+
 // Animation variants
 const cardVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -362,7 +375,7 @@ export function ProjectsSection() {
   const featuredProjects = projects.filter(project => project.featured);
   const otherProjects = projects.filter(project => !project.featured);
   const sectionRef = useRef(null);
-  const [particles, setParticles] = useState([]);
+  const [particles, setParticles] = useState<Particle[]>([]);
   
   // Scroll animations
   const { scrollYProgress } = useScroll({
