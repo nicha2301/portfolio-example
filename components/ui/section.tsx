@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { forwardRef } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -10,16 +10,19 @@ interface SectionProps {
   id?: string;
 }
 
-export function Section({ children, className, id }: SectionProps) {
-  return (
-    <section
-      id={id}
-      className={cn("py-16 md:py-24", className)}
-    >
-      {children}
-    </section>
-  );
-}
+export const Section = forwardRef<HTMLElement, SectionProps>(
+  ({ children, className, id }, ref) => {
+    return (
+      <section
+        id={id}
+        ref={ref}
+        className={cn("py-16 md:py-24", className)}
+      >
+        {children}
+      </section>
+    );
+  }
+);
 
 interface SectionHeadingProps {
   title: string;
