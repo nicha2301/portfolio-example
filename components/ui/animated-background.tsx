@@ -119,7 +119,14 @@ function BackgroundParticles() {
   );
 }
 
-function MovingBlob({ className, duration = 20, delay = 0, amplitude = 50 }) {
+interface MovingBlobProps {
+  className: string;
+  duration?: number;
+  delay?: number;
+  amplitude?: number;
+}
+
+function MovingBlob({ className, duration = 20, delay = 0, amplitude = 50 }: MovingBlobProps) {
   const controls = useAnimationControls();
   
   useEffect(() => {
