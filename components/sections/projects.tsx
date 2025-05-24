@@ -123,6 +123,23 @@ const useTilt = (scale = 1.05, perspective = 1000, speed = 500) => {
   };
 };
 
+// Define types for project and props
+interface Project {
+  title: string;
+  description: string;
+  image: string;
+  tags: string[];
+  demo?: string;
+  github?: string;
+  featured: boolean;
+  color: string;
+}
+
+interface ProjectProps {
+  project: Project;
+  index: number;
+}
+
 // Animation variants
 const cardVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -144,7 +161,7 @@ const cardVariants = {
 };
 
 // Featured Project Component
-const FeaturedProject = ({ project, index }) => {
+const FeaturedProject = ({ project, index }: ProjectProps) => {
   const projectRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: projectRef,
@@ -259,7 +276,7 @@ const FeaturedProject = ({ project, index }) => {
 };
 
 // Grid Project Component
-const GridProject = ({ project, index }) => {
+const GridProject = ({ project, index }: ProjectProps) => {
   const tiltProps = useTilt();
   
   return (
