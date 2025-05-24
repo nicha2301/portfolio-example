@@ -57,7 +57,7 @@ export function Header() {
         </Link>
         
         <nav className="hidden md:flex items-center space-x-6">
-          {navItems.map((item, i) => (
+          {navItems.map((item) => (
             <Link
               key={item.name}
               href={item.href}

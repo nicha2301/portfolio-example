@@ -287,15 +287,15 @@ export function ContactSection() {
               </p>
               
               <div className="flex flex-wrap gap-4">
-                {socialLinks.map((link, index) => (
+                {socialLinks.map((link) => (
                   <motion.a
                     key={link.name}
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    className={`w-12 h-12 bg-white/10 ${link.color} hover:text-white rounded-full flex items-center justify-center transition-all duration-300`}
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.2 }}
-                    className={`w-12 h-12 bg-white/10 ${link.color} hover:text-white rounded-full flex items-center justify-center transition-all duration-300`}
                   >
                     {link.icon}
                   </motion.a>

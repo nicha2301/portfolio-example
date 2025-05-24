@@ -152,6 +152,202 @@ const floatingAnimation = {
   }
 };
 
+// Featured Project Component
+const FeaturedProject = ({ project, index }) => {
+  const projectRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: projectRef,
+    offset: ["start end", "end start"]
+  });
+    
+  const imageScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1.05, 1]);
+  const textY = useTransform(scrollYProgress, [0, 0.5, 1], [50, 0, 50]);
+  const imageRotate = useTransform(scrollYProgress, [0, 0.5, 1], [index % 2 === 0 ? -3 : 3, 0, index % 2 === 0 ? 3 : -3]);
+
+  return (
+    <motion.div
+      ref={projectRef}
+      key={project.title}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.7 }}
+      className={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-center ${
+        index % 2 === 1 ? "lg:flex-row-reverse" : ""
+      }`}
+    >
+      {/* Project Image */}
+      <div className={`relative ${index % 2 === 1 ? "lg:order-2" : ""}`}>
+        <motion.div
+          style={{ 
+            scale: imageScale,
+            rotate: imageRotate,
+            transformStyle: "preserve-3d",
+            transformPerspective: "1000px"
+          }}
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.5 }}
+          className="relative z-10 rounded-2xl overflow-hidden shadow-2xl aspect-video"
+        >
+          <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-black/20 z-10" />
+          <Image
+            src={project.image || "/placeholder.jpg"}
+            alt={project.title}
+            fill
+            className="object-cover"
+          />
+            
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 z-20">
+            <div className="flex gap-4">
+              {project.github && (
+                <Link href={project.github} target="_blank" rel="noopener noreferrer">
+                  <Button size="icon" variant="secondary" className="rounded-full">
+                    <Github className="h-5 w-5" />
+                  </Button>
+                </Link>
+              )}
+              {project.demo && (
+                <Link href={project.demo} target="_blank" rel="noopener noreferrer">
+                  <Button size="icon" variant="secondary" className="rounded-full">
+                    <ExternalLink className="h-5 w-5" />
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      </div>
+        
+      {/* Project Info */}
+      <motion.div
+        style={{ y: textY }}
+        className={`${index % 2 === 1 ? "lg:order-1" : ""}`}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          viewport={{ once: true }}
+        >
+          <h3 className="text-3xl font-bold mb-4">{project.title}</h3>
+          <p className="text-muted-foreground mb-6">{project.description}</p>
+            
+          <div className="flex flex-wrap gap-2 mb-8">
+            {project.tags.map((tag) => (
+              <span 
+                key={tag} 
+                className="px-3 py-1 rounded-full text-xs bg-foreground/10 backdrop-blur-sm"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+            
+          <div className="flex gap-4">
+            {project.github && (
+              <Link href={project.github} target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" size="sm" className="group">
+                  <Github className="h-4 w-4 mr-2" />
+                  <span>Code</span>
+                </Button>
+              </Link>
+            )}
+            {project.demo && (
+              <Link href={project.demo} target="_blank" rel="noopener noreferrer">
+                <Button size="sm" className="group">
+                  <span>Live Demo</span>
+                  <ArrowUpRight className="h-4 w-4 ml-2 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                </Button>
+              </Link>
+            )}
+          </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+// Grid Project Component
+const GridProject = ({ project, index }) => {
+  const tiltProps = useTilt();
+  
+  return (
+    <motion.div
+      variants={cardVariants}
+      initial="hidden"
+      whileInView="visible"
+      whileHover="hover"
+      viewport={{ once: true, margin: "-50px" }}
+      custom={index}
+      className="relative h-full"
+    >
+      <div 
+        {...tiltProps}
+        className="relative h-full group rounded-2xl overflow-hidden bg-foreground/[0.03] border border-foreground/10 hover:border-primary/20 transition-all duration-500 shadow-lg shadow-black/[0.03]"
+      >
+        {/* Project image */}
+        <div className="relative aspect-video w-full overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80 z-10" />
+          <Image
+            src={project.image || "/placeholder.jpg"}
+            alt={project.title}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+        </div>
+          
+        {/* Project content */}
+        <div className="p-6 relative z-10">
+          <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors duration-300">{project.title}</h3>
+          <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{project.description}</p>
+            
+          <div className="flex flex-wrap gap-1.5 mb-4">
+            {project.tags.slice(0, 3).map((tag) => (
+              <span 
+                key={tag} 
+                className="px-2 py-0.5 rounded-full text-xs bg-foreground/10 backdrop-blur-sm"
+              >
+                {tag}
+              </span>
+            ))}
+            {project.tags.length > 3 && (
+              <span className="px-2 py-0.5 rounded-full text-xs bg-foreground/5">
+                +{project.tags.length - 3}
+              </span>
+            )}
+          </div>
+            
+          <div className="flex justify-between items-center">
+            <div className="flex gap-2">
+              {project.github && (
+                <Link href={project.github} target="_blank" rel="noopener noreferrer" className="opacity-60 hover:opacity-100 transition-opacity">
+                  <Github className="h-4 w-4" />
+                </Link>
+              )}
+              {project.demo && (
+                <Link href={project.demo} target="_blank" rel="noopener noreferrer" className="opacity-60 hover:opacity-100 transition-opacity">
+                  <ExternalLink className="h-4 w-4" />
+                </Link>
+              )}
+            </div>
+              
+            <Link href={project.demo || project.github || "#"} target="_blank" rel="noopener noreferrer">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="gap-1 text-xs font-normal opacity-80 hover:opacity-100 px-2 h-7"
+              >
+                <span>View Project</span>
+                <ChevronRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
 export function ProjectsSection() {
   const [activeTab, setActiveTab] = useState("all");
   const [visibleProjects, setVisibleProjects] = useState(projects);
@@ -178,7 +374,7 @@ export function ProjectsSection() {
     } else {
       setVisibleProjects(otherProjects);
     }
-  }, [activeTab]);
+  }, [activeTab, featuredProjects, otherProjects]);
 
   // Generate particles only on client-side to avoid hydration mismatch
   useEffect(() => {
@@ -201,279 +397,6 @@ export function ProjectsSection() {
     
     setParticles(newParticles);
   }, []);
-
-  // Render featured project with alternating layout
-  const renderFeaturedProject = (project, index) => {
-    const projectRef = useRef(null);
-    const { scrollYProgress } = useScroll({
-      target: projectRef,
-      offset: ["start end", "end start"]
-    });
-    
-    const imageScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1.05, 1]);
-    const textY = useTransform(scrollYProgress, [0, 0.5, 1], [50, 0, 50]);
-    const imageRotate = useTransform(scrollYProgress, [0, 0.5, 1], [index % 2 === 0 ? -3 : 3, 0, index % 2 === 0 ? 3 : -3]);
-
-  return (
-      <motion.div
-        ref={projectRef}
-        key={project.title}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.7 }}
-        className={`grid grid-cols-1 lg:grid-cols-2 gap-16 items-center ${
-          index % 2 === 1 ? "lg:flex-row-reverse" : ""
-        }`}
-      >
-        {/* Project Image */}
-        <div className={`relative ${index % 2 === 1 ? "lg:order-2" : ""}`}>
-          <motion.div
-            style={{ 
-              scale: imageScale,
-              rotate: imageRotate,
-              transformStyle: "preserve-3d",
-              transformPerspective: "1000px"
-            }}
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.5 }}
-            className="relative z-10 rounded-2xl overflow-hidden shadow-2xl aspect-video"
-          >
-            <div className="absolute inset-0 bg-gradient-to-tr from-black/40 to-black/20 z-10" />
-            <Image
-              src={project.image || "/placeholder.jpg"}
-              alt={project.title}
-              fill
-              className="object-cover"
-            />
-            
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 z-20">
-            <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                whileHover={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3 }}
-                className="flex gap-4"
-              >
-                <Button 
-                  asChild 
-                  size="sm" 
-                  className="rounded-full bg-white text-black hover:bg-white/90 shadow-lg"
-            >
-                  <Link href={project.demo} target="_blank" className="flex items-center gap-1">
-                    <ExternalLink className="h-4 w-4" />
-                    <span>Demo</span>
-                  </Link>
-                </Button>
-                
-                <Button 
-                  asChild 
-                  size="sm" 
-                  variant="outline" 
-                  className="rounded-full border-white text-white hover:bg-white/20"
-                >
-                  <Link href={project.github} target="_blank" className="flex items-center gap-1">
-                    <Github className="h-4 w-4" />
-                    <span>Code</span>
-                  </Link>
-                </Button>
-              </motion.div>
-            </div>
-          </motion.div>
-          
-          {/* Floating elements */}
-          <motion.div 
-            animate={floatingAnimation}
-            className="absolute -bottom-10 right-1/4 w-20 h-20 rounded-full bg-gradient-to-r from-primary/30 to-primary/10 blur-md -z-10"
-          />
-          <motion.div 
-            animate={{
-              ...floatingAnimation,
-              transition: {
-                delay: 1,
-                duration: 5,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }
-            }}
-            className="absolute top-10 -right-5 w-16 h-16 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-md -z-10"
-          />
-          
-          {/* Background decoration */}
-          <div className={`absolute -bottom-6 -${index % 2 === 0 ? 'right' : 'left'}-6 w-3/4 h-3/4 rounded-2xl bg-gradient-to-r from-${project.color}-500/20 to-${project.color}-300/20 -z-10 blur-sm`} />
-        </div>
-        
-        {/* Project Info */}
-        <motion.div 
-          style={{ y: textY }}
-          className={index % 2 === 1 ? "lg:order-1" : ""}
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-6"
-          >
-            <span className="text-sm font-mono text-primary">Dự án nổi bật</span>
-            <h3 className="text-3xl font-bold">{project.title}</h3>
-            <p className="text-muted-foreground">{project.description}</p>
-            
-            <div className="flex flex-wrap gap-2 pt-4">
-              {project.tags.map((tag, tagIndex) => (
-                <motion.span
-                  key={tagIndex}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3 + tagIndex * 0.1 }}
-                  viewport={{ once: true }}
-                  whileHover={{ y: -5, scale: 1.05 }}
-                  className={`text-xs px-3 py-1 rounded-full bg-${project.color}-500/10 text-${project.color}-500 border border-${project.color}-500/20`}
-                    >
-                      {tag}
-                </motion.span>
-                  ))}
-            </div>
-            
-            <div className="flex gap-6 pt-4">
-              <Link 
-                href={project.demo} 
-                target="_blank"
-                className="flex items-center gap-1 text-sm font-medium group hover:text-primary transition-colors"
-              >
-                <span>Xem demo</span>
-                <motion.div
-                  animate={{ x: [0, 4, 0], y: [0, -4, 0] }}
-                  transition={{ repeat: Infinity, duration: 1.5, repeatDelay: 1 }}
-                >
-                  <ArrowUpRight className="h-4 w-4" />
-                </motion.div>
-              </Link>
-              
-              <Link 
-                href={project.github} 
-                target="_blank"
-                className="flex items-center gap-1 text-sm font-medium group hover:text-primary transition-colors"
-              >
-                <span>Mã nguồn</span>
-                <motion.div
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <Github className="h-4 w-4" />
-                </motion.div>
-              </Link>
-            </div>
-          </motion.div>
-        </motion.div>
-      </motion.div>
-    );
-  };
-
-  // Render grid project card with 3D tilt effect
-  const renderGridProject = (project, index) => {
-    const tiltProps = useTilt();
-    
-    return (
-      <motion.div
-        key={project.title}
-        variants={cardVariants}
-        initial="hidden"
-        whileInView="visible"
-        whileHover="hover"
-        viewport={{ once: true, margin: "-50px" }}
-        custom={index}
-        {...tiltProps}
-        className="group rounded-2xl overflow-hidden bg-foreground/[0.01] border border-foreground/5 hover:border-primary/20 transition-all duration-300"
-        style={{
-          ...tiltProps.style,
-          transformStyle: "preserve-3d",
-        }}
-      >
-        <div className="relative h-48 overflow-hidden">
-          <Image
-            src={project.image || "/placeholder.jpg"}
-            alt={project.title}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
-            style={{ transform: "translateZ(20px)" }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-          
-          <div className="absolute bottom-0 w-full p-4 flex justify-between items-center">
-            <h4 className="text-white font-semibold text-lg" style={{ transform: "translateZ(30px)" }}>{project.title}</h4>
-            <motion.div 
-              whileHover={{ scale: 1.1, rotate: 45 }}
-              className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white"
-              style={{ transform: "translateZ(40px)" }}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </motion.div>
-          </div>
-        </div>
-        
-        <motion.div className="p-6 space-y-4" style={{ transform: "translateZ(30px)" }}>
-          <p className="text-muted-foreground line-clamp-2">{project.description}</p>
-          
-          <div className="flex flex-wrap gap-2">
-            {project.tags.slice(0, 3).map((tag, tagIndex) => (
-              <motion.span
-                key={tagIndex}
-                initial={{ opacity: 0, x: -10 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 + tagIndex * 0.1 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -2, x: 2 }}
-                className="text-xs px-2 py-1 rounded-full bg-foreground/5 text-foreground/70"
-              >
-                {tag}
-              </motion.span>
-            ))}
-            {project.tags.length > 3 && (
-              <motion.span 
-                initial={{ opacity: 0, x: -10 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5 }}
-                  viewport={{ once: true }}
-                className="text-xs px-2 py-1 rounded-full bg-foreground/5 text-foreground/70"
-              >
-                +{project.tags.length - 3}
-              </motion.span>
-            )}
-          </div>
-          
-          <div className="pt-4 flex justify-between border-t border-foreground/5">
-            <motion.div
-              whileHover={{ scale: 1.1, x: 5 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Link 
-                href={project.demo} 
-                target="_blank"
-                className="text-xs flex items-center gap-1 hover:text-primary transition-colors"
-              >
-                <ExternalLink className="h-3 w-3" />
-                <span>Demo</span>
-              </Link>
-            </motion.div>
-            
-            <motion.div
-              whileHover={{ scale: 1.1, x: -5 }}
-              transition={{ duration: 0.2 }}
-                >
-                  <Link 
-                href={project.github} 
-                    target="_blank"
-                className="text-xs flex items-center gap-1 hover:text-primary transition-colors"
-                  >
-                <Github className="h-3 w-3" />
-                <span>Code</span>
-                  </Link>
-                </motion.div>
-              </div>
-        </motion.div>
-      </motion.div>
-    );
-  };
 
   return (
     <Section ref={sectionRef} id="projects" className="py-32 relative overflow-hidden">
@@ -594,7 +517,7 @@ export function ProjectsSection() {
                 transition={{ duration: 0.5 }}
                 className="space-y-32 mb-32"
               >
-                {featuredProjects.map((project, index) => renderFeaturedProject(project, index))}
+                {featuredProjects.map((project, index) => <FeaturedProject key={project.title} project={project} index={index} />)}
               </motion.div>
             )}
           </AnimatePresence>
@@ -642,7 +565,7 @@ export function ProjectsSection() {
                 >
                   {/* Show only 3 in "all" tab, but show all in "other" tab */}
                   {(activeTab === "all" ? otherProjects.slice(0, 3) : otherProjects).map(
-                    (project, index) => renderGridProject(project, index)
+                    (project, index) => <GridProject key={project.title} project={project} index={index} />
                   )}
                 </motion.div>
               </motion.div>

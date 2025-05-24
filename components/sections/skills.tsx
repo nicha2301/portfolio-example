@@ -119,7 +119,7 @@ export function SkillsSection() {
           </motion.div>
           
           <div className="mt-20 space-y-20">
-            {skillCategories.map((category, catIndex) => (
+            {skillCategories.map((category) => (
               <motion.div 
                 key={category.category}
                 variants={fadeInUp}
