@@ -3,8 +3,21 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence, useAnimationControls } from 'framer-motion';
 
+// Interface cho section config
+interface SectionStyle {
+  primaryColor: string;
+  secondaryColor: string;
+  tertiaryColor: string;
+  scale: number;
+  rotation: number;
+}
+
+type SectionConfigType = {
+  [key: string]: SectionStyle;
+};
+
 // Các thông số cấu hình cho mỗi section
-const sectionConfig = {
+const sectionConfig: SectionConfigType = {
   hero: {
     primaryColor: 'bg-gradient-to-br from-purple-500/30 to-blue-500/30',
     secondaryColor: 'bg-gradient-to-br from-pink-500/20 to-purple-500/20',
@@ -176,8 +189,8 @@ function Grid3D() {
 }
 
 export function AnimatedBackground() {
-  const [activeSection, setActiveSection] = useState('hero');
-  const [prevSection, setPrevSection] = useState('hero');
+  const [activeSection, setActiveSection] = useState<string>('hero');
+  const [prevSection, setPrevSection] = useState<string>('hero');
   const [isMounted, setIsMounted] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   
