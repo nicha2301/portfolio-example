@@ -179,7 +179,7 @@ export function AnimatedBackground() {
   const [activeSection, setActiveSection] = useState('hero');
   const [prevSection, setPrevSection] = useState('hero');
   const [isMounted, setIsMounted] = useState(false);
-  const timeoutRef = useRef(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   // Theo dõi section hiện tại dựa vào scroll position - chỉ chạy ở client
   useEffect(() => {
