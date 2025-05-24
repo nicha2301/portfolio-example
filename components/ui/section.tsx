@@ -24,6 +24,8 @@ export const Section = forwardRef<HTMLElement, SectionProps>(
   }
 );
 
+Section.displayName = "Section";
+
 interface SectionHeadingProps {
   title: string;
   subtitle?: string;
