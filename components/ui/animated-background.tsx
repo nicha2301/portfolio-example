@@ -56,9 +56,22 @@ const fadeTransition = {
   duration: 1.2
 };
 
+// Interface cho particles
+interface BackgroundParticle {
+  id: number;
+  x: number;
+  y: number;
+  opacity: number;
+  scale: number;
+  y1: number;
+  y2: number;
+  duration: number;
+  delay: number;
+}
+
 // Component riêng cho phần particles để tránh lỗi hooks
 function BackgroundParticles() {
-  const [particles, setParticles] = useState([]);
+  const [particles, setParticles] = useState<BackgroundParticle[]>([]);
   
   useEffect(() => {
     // Chỉ tạo particles ở phía client
