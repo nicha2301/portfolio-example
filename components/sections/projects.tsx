@@ -93,7 +93,7 @@ const useTilt = (scale = 1.05, perspective = 1000, speed = 500) => {
   const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-10, 10]), springConfig);
   const scaleValue = useSpring(z, springConfig);
 
-  const handleMouse = (event) => {
+  const handleMouse = (event: React.MouseEvent) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const width = rect.width;
     const height = rect.height;
