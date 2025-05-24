@@ -1,4 +1,4 @@
-# Portfolio - Modern Developer Portfolio
+# Portfolio - Modern Developer Portfolio (AI version)
 
 ![Next.js](https://img.shields.io/badge/Next.js-15.1.8-black)
 ![React](https://img.shields.io/badge/React-19.0.0-blue)
